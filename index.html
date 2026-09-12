@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SkillSwap Exchange</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            🔄 SkillSwap
+        </div>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#profile">My Profile</a>
+            <a href="#matches">Find Matches</a>
+            <a href="#requests">Requests</a>
+        </div>
+
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Learn. Teach. <span>Exchange.</span>
+            </h1>
+
+            <p>
+                Connect with people who have the skills you want
+                to learn and share the skills you already know.
+            </p>
+
+            <button onclick="showProfile()">
+                Create Your Skill Profile
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+
+        <h2>How SkillSwap Works</h2>
+
+        <div class="steps">
+
+            <div class="step-card">
+
+                <div class="icon">👤</div>
+
+                <h3>Create Your Profile</h3>
+
+                <p>
+                    Add the skills you can teach and the
+                    skills you want to learn.
+                </p>
+
+            </div>
+
+
+            <div class="step-card">
+
+                <div class="icon">🤖</div>
+
+                <h3>Find Your Match</h3>
+
+                <p>
+                    Discover people whose skills match
+                    your learning goals.
+                </p>
+
+            </div>
+
+
+            <div class="step-card">
+
+                <div class="icon">🔄</div>
+
+                <h3>Exchange Skills</h3>
+
+                <p>
+                    Connect with your match and learn
+                    from each other.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Profile Section -->
+    <section id="profile" class="profile-section">
+
+        <h2>Create Your Skill Profile</h2>
+
+        <form id="skillForm">
+
+            <label for="studentName">
+                Your Name
+            </label>
+
+            <input
+                type="text"
+                id="studentName"
+                placeholder="Enter your name"
+                required
+            >
+
+
+            <label for="teachSkills">
+                Skills You Can Teach
+            </label>
+
+            <input
+                type="text"
+                id="teachSkills"
+                placeholder="e.g. HTML, Excel, Photoshop"
+                required
+            >
+
+
+            <label for="learnSkills">
+                Skills You Want to Learn
+            </label>
+
+            <input
+                type="text"
+                id="learnSkills"
+                placeholder="e.g. Python, JavaScript"
+                required
+            >
+
+
+            <label for="experience">
+                Experience Level
+            </label>
+
+            <select id="experience">
+
+                <option value="Beginner">
+                    Beginner
+                </option>
+
+                <option value="Intermediate">
+                    Intermediate
+                </option>
+
+                <option value="Advanced">
+                    Advanced
+                </option>
+
+            </select>
+
+
+            <label for="availability">
+                Availability
+            </label>
+
+            <select id="availability">
+
+                <option value="Weekdays">
+                    Weekdays
+                </option>
+
+                <option value="Weekends">
+                    Weekends
+                </option>
+
+                <option value="Both">
+                    Weekdays & Weekends
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                Save Profile
+            </button>
+
+        </form>
+
+
+        <div id="profileMessage"></div>
+
+    </section>
+
+
+    <!-- Matches Section -->
+    <section id="matches" class="matches-section">
+
+        <h2>🤖 Recommended Skill Matches</h2>
+
+        <p class="section-description">
+            Discover people who may be compatible with
+            your skills and learning goals.
+        </p>
+
+
+        <div id="matchContainer">
+
+
+            <!-- Match 1 -->
+            <div class="match-card">
+
+                <div class="student-avatar">
+                    👩‍💻
+                </div>
+
+                <div class="match-info">
+
+                    <h3>Priya Sharma</h3>
+
+                    <p>
+                        <strong>Can teach:</strong>
+                        Python, JavaScript
+                    </p>
+
+                    <p>
+                        <strong>Wants to learn:</strong>
+                        Excel
+                    </p>
+
+                    <div class="match-score">
+                        🎯 94% Match
+                    </div>
+
+                </div>
+
+                <button onclick="sendRequest('Priya Sharma')">
+                    Send Request
+                </button>
+
+            </div>
+
+
+            <!-- Match 2 -->
+            <div class="match-card">
+
+                <div class="student-avatar">
+                    👨‍💻
+                </div>
+
+                <div class="match-info">
+
+                    <h3>Rahul Verma</h3>
+
+                    <p>
+                        <strong>Can teach:</strong>
+                        Photoshop, UI Design
+                    </p>
+
+                    <p>
+                        <strong>Wants to learn:</strong>
+                        HTML, CSS
+                    </p>
+
+                    <div class="match-score">
+                        🎯 87% Match
+                    </div>
+
+                </div>
+
+                <button onclick="sendRequest('Rahul Verma')">
+                    Send Request
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- Requests Section -->
+    <section id="requests" class="requests-section">
+
+        <h2>📩 Skill Exchange Requests</h2>
+
+        <div id="requestMessage">
+
+            <p class="empty-message">
+                No exchange requests yet.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <h3>🔄 SkillSwap Exchange</h3>
+
+        <p>
+            Learn from your peers. Share your skills.
+        </p>
+
+        <p>
+            AI-powered peer-to-peer learning platform
+        </p>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
