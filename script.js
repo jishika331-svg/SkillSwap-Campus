@@ -12,6 +12,16 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+// Firebase App Check
+const appCheck = firebase.appCheck();
+
+appCheck.activate(
+    new firebase.appCheck.ReCaptchaEnterpriseProvider(
+        "6Le5EbktAAAAAKfORqPQj1X8k24Ah8BSD02-QLQs"
+    ),
+    true
+);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
