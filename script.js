@@ -107,6 +107,7 @@ skillForm.addEventListener("submit", async function(event) {
         `;
 
         skillForm.reset();
+      generateAIMatches();
 
     } catch (error) {
 
@@ -240,6 +241,203 @@ document.getElementById("skillForm").addEventListener("submit", function () {
     });
 
 });
+// =====================================
+// GEMINI AI SKILL MATCHING
+// =====================================
+
+async function generateAIMatches() {
+
+    const matchContainer = document.getElementById("matchContainer");
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        return;
+    }
+
+    if (!window.geminiModel) {
+        matchContainer.innerHTML = `
+            <p>🤖 Gemini is still loading. Please try again.</p>
+        `;
+        return;
+    }
+
+    try {
+
+        matchContainer.innerHTML = `
+            <p>🤖 Gemini AI is finding your best skill matches...</p>
+        `;
+
+        // Get current student's profile
+        const currentUserDoc = await db
+            .collection("users")
+            .doc(user.uid)
+            .get();
+
+        if (!currentUserDoc.exists) {
+            matchContainer.innerHTML = `
+                <p>⚠️ Please create your skill profile first.</p>
+            `;
+            return;
+        }
+
+        const currentUser = currentUserDoc.data();
+
+        // Get all other student profiles
+        const snapshot = await db.collection("users").get();
+
+        const students = [];
+
+        snapshot.forEach((doc) => {
+
+            if (doc.id !== user.uid) {
+
+                const data = doc.data();
+
+                students.push({
+                    id: doc.id,
+                    name: data.name || "Student",
+                    teachSkills: data.teachSkills || "",
+                    learnSkills: data.learnSkills || "",
+                    experience: data.experience || "Beginner",
+                    availability: data.availability || "Not specified"
+                });
+
+            }
+
+        });
+
+        if (students.length === 0) {
+
+            matchContainer.innerHTML = `
+                <p>👥 No other student profiles available yet.</p>
+            `;
+
+            return;
+        }
+
+        // Ask Gemini to find the best matches
+        const prompt = `
+You are the AI matching system for SkillSwap Campus.
+
+Current student:
+Name: ${currentUser.name}
+Can teach: ${currentUser.teachSkills}
+Wants to learn: ${currentUser.learnSkills}
+Experience: ${currentUser.experience}
+Availability: ${currentUser.availability}
+
+Other students:
+${JSON.stringify(students)}
+
+Find the best skill-exchange matches.
+
+A strong match happens when:
+1. The other student can teach something the current student wants to learn.
+2. The current student can teach something the other student wants to learn.
+3. Consider semantic similarity, not only exact skill names.
+4. Consider experience and availability when useful.
+
+Return ONLY valid JSON in this exact format:
+
+[
+  {
+    "studentId": "student id",
+    "name": "student name",
+    "matchScore": 95,
+    "reason": "Short explanation of why they are a good skill exchange match."
+  }
+]
+
+Return at most 5 matches.
+Sort from highest match score to lowest.
+Do not include markdown or code fences.
+`;
+
+        const result = await window.geminiModel.generateContent(prompt);
+
+        const response = result.response;
+        const text = response.text();
+
+        console.log("Gemini response:", text);
+
+        // Clean possible markdown formatting
+        const cleanedText = text
+            .replace(/```json/g, "")
+            .replace(/```/g, "")
+            .trim();
+
+        const matches = JSON.parse(cleanedText);
+
+        // Display AI matches
+        matchContainer.innerHTML = "";
+
+        matches.forEach((match) => {
+
+            const student = students.find(
+                (s) => s.id === match.studentId
+            );
+
+            if (!student) {
+                return;
+            }
+
+            const card = document.createElement("div");
+
+            card.className = "match-card";
+
+            card.innerHTML = `
+                <div class="student-avatar">
+                    🤖
+                </div>
+
+                <div class="match-info">
+
+                    <h3>${match.name}</h3>
+
+                    <p>
+                        <strong>Can teach:</strong>
+                        ${student.teachSkills}
+                    </p>
+
+                    <p>
+                        <strong>Wants to learn:</strong>
+                        ${student.learnSkills}
+                    </p>
+
+                    <div class="match-score">
+                        🎯 ${match.matchScore}% AI Match
+                    </div>
+
+                    <p>
+                        🤖 <strong>Why:</strong>
+                        ${match.reason}
+                    </p>
+
+                </div>
+
+                <button onclick="sendRequest('${match.name}')">
+                    Send Request
+                </button>
+            `;
+
+            matchContainer.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error("Gemini matching error:", error);
+
+        matchContainer.innerHTML = `
+            <div class="request-card">
+                <h3>❌ AI Matching Error</h3>
+                <p>${error.message}</p>
+            </div>
+        `;
+
+    }
+}
 
 
 
