@@ -166,3 +166,49 @@ function login() {
             message.textContent = error.message;
         });
 }
+
+
+
+
+// =============================
+// FIREBASE AUTHENTICATION
+// =============================
+
+function signUp() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("authMessage");
+
+    if (!email || !password) {
+        message.textContent = "Please enter email and password.";
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+            message.textContent = "Account created successfully! 🎉";
+        })
+        .catch((error) => {
+            message.textContent = error.message;
+        });
+}
+
+function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const message = document.getElementById("authMessage");
+
+    if (!email || !password) {
+        message.textContent = "Please enter email and password.";
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+            message.textContent = "Account created successfully! 🎉";
+        })
+        .catch((error) => {
+            message.textContent = error.message;
+        });
+}
+
