@@ -28,61 +28,87 @@ console.log("Firebase connected successfully!");
 
 const skillForm = document.getElementById("skillForm");
 
-skillForm.addEventListener("submit", function(event) {
+skillForm.addEventListener("submit", async function(event) {
 
     event.preventDefault();
 
-    const name =
-        document.getElementById("studentName").value;
+    const name = document.getElementById("studentName").value;
+    const teachSkills = document.getElementById("teachSkills").value;
+    const learnSkills = document.getElementById("learnSkills").value;
+    const experience = document.getElementById("experience").value;
+    const availability = document.getElementById("availability").value;
 
-    const teachSkills =
-        document.getElementById("teachSkills").value;
+    const message = document.getElementById("profileMessage");
 
-    const learnSkills =
-        document.getElementById("learnSkills").value;
+    // Check if student is logged in
+    const user = auth.currentUser;
 
-    const experience =
-        document.getElementById("experience").value;
+    if (!user) {
+        message.innerHTML = `
+            <div class="request-card">
+                <h3>⚠️ Please Login First</h3>
+                <p>You need to login before creating your profile.</p>
+            </div>
+        `;
+        return;
+    }
 
-    const availability =
-        document.getElementById("availability").value;
+    try {
 
+        // Save profile to Firestore
+        await db.collection("users").doc(user.uid).set({
 
-    const message =
-        document.getElementById("profileMessage");
+            name: name,
+            email: user.email,
+            teachSkills: teachSkills,
+            learnSkills: learnSkills,
+            experience: experience,
+            availability: availability,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
 
+        });
 
-    message.innerHTML = `
-        <div class="request-card">
+        message.innerHTML = `
+            <div class="request-card">
+                <h3>✅ Profile Saved Successfully!</h3>
 
-            ✅ Profile created successfully!
+                <p>Welcome, <strong>${name}</strong>! 👋</p>
 
-            <br><br>
+                <p>
+                    You can teach:
+                    <strong>${teachSkills}</strong>
+                </p>
 
-            Welcome, <strong>${name}</strong>! 👋
+                <p>
+                    You want to learn:
+                    <strong>${learnSkills}</strong>
+                </p>
 
-            <br>
+                <p>
+                    Experience:
+                    <strong>${experience}</strong>
+                </p>
 
-            You can teach:
-            <strong>${teachSkills}</strong>
+                <p>
+                    Availability:
+                    <strong>${availability}</strong>
+                </p>
+            </div>
+        `;
 
-            <br>
+        skillForm.reset();
 
-            You want to learn:
-            <strong>${learnSkills}</strong>
+    } catch (error) {
 
-            <br>
+        console.error("Error saving profile:", error);
 
-            Experience:
-            <strong>${experience}</strong>
-
-            <br>
-
-            Availability:
-            <strong>${availability}</strong>
-
-        </div>
-    `;
+        message.innerHTML = `
+            <div class="request-card">
+                <h3>❌ Error</h3>
+                <p>${error.message}</p>
+            </div>
+        `;
+    }
 
 });
 
