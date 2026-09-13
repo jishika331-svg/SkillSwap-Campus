@@ -192,6 +192,44 @@ function login() {
             message.textContent = error.message;
         });
 }
+// ==============================
+// SAVE PROFILE TO FIRESTORE
+// ==============================
+
+document.getElementById("skillForm").addEventListener("submit", function () {
+
+    const user = auth.currentUser;
+
+    if (!user) {
+        alert("Please login first!");
+        return;
+    }
+
+    const name = document.getElementById("studentName").value;
+    const teachSkills = document.getElementById("teachSkills").value;
+    const learnSkills = document.getElementById("learnSkills").value;
+    const experience = document.getElementById("experience").value;
+    const availability = document.getElementById("availability").value;
+
+    db.collection("users").doc(user.uid).set({
+        name: name,
+        email: user.email,
+        teachSkills: teachSkills,
+        learnSkills: learnSkills,
+        experience: experience,
+        availability: availability,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true })
+    .then(() => {
+        console.log("Profile saved to Firestore!");
+        alert("Profile saved successfully! 🎉");
+    })
+    .catch((error) => {
+        console.error("Error saving profile:", error);
+        alert("Error saving profile: " + error.message);
+    });
+
+});
 
 
 
