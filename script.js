@@ -1,3 +1,27 @@
+// =============================
+// FIREBASE CONFIGURATION
+// =============================
+const firebaseConfig = {
+  apiKey: "AIzaSyAcVk2SwecMQRBmUUlJeq8F_pCrdQSBjaU",
+  authDomain: "skillswap-campus-f4a80.firebaseapp.com",
+  projectId: "skillswap-campus-f4a80",
+  storageBucket: "skillswap-campus-f4a80.firebasestorage.app",
+  messagingSenderId: "89220709647",
+  appId: "1:89220709647:web:5e985ebc1073bd17c3d27a"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+console.log("Firebase connected successfully!");
+
+
+// =============================
+// PROFILE CREATION
+// =============================
+
 // =================================
 // PROFILE CREATION
 // =================================
